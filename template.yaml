@@ -16,23 +16,23 @@ Globals:
     Environment:
       Variables:
         REGION: !Ref Region
-        API_ENDPOINT: !Ref API_ENDPOINT
-        API_TOKEN: !Ref API_TOKEN
+        API_ENDPOINT: !Ref ApiEndpoint
+        API_TOKEN: !Ref ApiToken
 
 Parameters:
-  CACHE_TABLE:
+  CacheTable:
     Description: 'Required. The cache table in Dynomodb'
     Type: String
     Default: 'Reels'
-  API_TOKEN:
+  ApiToken:
     Description: 'Required. Slate App API Key'
     Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: 'API_TOKEN'
-  API_ENDPOINT:
+    Default: 'REEL_API_KEY'
+  ApiEndpoint:
     Description: 'Required. The Slate App API end point for all reel related information'
     Type: String
     Default: 'https://mofa.slateapp.com/api/v1/showreel/'
-  REGION:
+  Region:
     Description: 'Required. The region we all want to be in.'
     Type: String
     Default: 'ap-southeast-2'
@@ -75,7 +75,7 @@ Resources:
       CodeUri: src/get_reel/
       Environment:
         Variables:
-          CACHE_TABLE: !Ref CACHE_TABLE
+          CACHE_TABLE: !Ref CacheTable
       Events:
         getReel:
           Type: Api
@@ -92,10 +92,10 @@ Resources:
       CodeUri: src/cache_all/
       Environment:
         Variables:
-          CACHE_TOPIC_ARN: !Ref cacheSNSTopic
+          CACHE_TOPIC_ARN: !Ref cacheTopic
       Policies:
         SNSPublishMessagePolicy:
-          TopicName: !GetAtt cacheSNSTopic.TopicName
+          TopicName: !GetAtt cacheTopic.TopicName
       Events:
         getReel:
           Type: Api
@@ -116,15 +116,3 @@ Outputs:
   reelApi:
     Description: "API Gateway endpoint URL for Prod stage for cacheReels function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/reel/"
-
-  cacheReelsFunction:
-    Description: "Caches all reels Function ARN"
-    Value: !Ref cacheAllFunction.Arn
-
-  cacheSNStopicName:
-    Description: SNS topic name
-    Value: !GetAtt cacheSNSTopic.TopicName
-
-  cacheSNStopicARN:
-    Description: SNS topic ARN
-    Value: !Ref cacheSNSTopic
