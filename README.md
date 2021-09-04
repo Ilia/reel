@@ -41,3 +41,10 @@ Yes - there is probably better ways to do this, and potentially even get API Gat
 - [ ] Add Cognito to API Gateway, so only auth users can invoke it
 - [ ] If anything goes wrong, we need to email the user (cache didn't work, etc)
 - [ ] Cloud Watch event setup, so that cache is invoked at regular time
+- [ ] Break template.yaml into sub template for better maintenance
+
+### Tips/Tricks/Hints 
+
+Things I need to remember:
+1. export AWS_PROFILE='profile' before running sam deploy
+2. SSM Parameter Store "REEL_API_KEY" should match the "Default" value
