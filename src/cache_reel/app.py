@@ -4,8 +4,14 @@ import boto3
 import os
 
 dynamodb = boto3.client('dynamodb')
+logger = logging.getLogger('boto3')
+logger.setLevel(logging.INFO)
+
 
 def lambda_handler(event, context):
+
+    logger.info('event: %s', event)
+    
     # TODO: ensure we have proper validation
     id = event['Records'][0]['Sns']['Message']
     data = fetchDataFromApi(id)
@@ -23,7 +29,7 @@ def formatData(data):
     return data
 
 def upsert(id, data): 
-    table_name = os.environ.get('CACHE_TABLE', 'reels')
+    table_name = os.environ.get('CACHE_TABLE', 'ReelCache')
     region = os.environ.get('REGION', 'ap-southeast-2')
     params = {
         'reel_id': {'S': str(id)},
