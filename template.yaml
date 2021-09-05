@@ -52,13 +52,13 @@ Resources:
         - Protocol: lambda
           Endpoint: !GetAtt cacheReelFunction.Arn
 
-  # Subscribe cacheReelFunction to the topic
-  cacheReelFunctionSubscription:
-    Type: AWS::SNS::Subscription
-    Properties:
-      Endpoint: !GetAtt cacheReelFunction.Arn
-      Protocol: lambda
-      TopicArn: !Ref cacheTopic
+  # Example of subscribing to a topic
+  # cacheReelFunctionSubscription:
+  #   Type: AWS::SNS::Subscription
+  #   Properties:
+  #     Endpoint: !GetAtt cacheReelFunction.Arn
+  #     Protocol: lambda
+  #     TopicArn: !Ref cacheTopic
 
   # Provide permission for SNS to invoke the Lambda function
   cacheReelFunctionPermission:
@@ -152,6 +152,6 @@ Resources:
             Method: get
 
 Outputs:
-  reelApi:
-    Description: "API Gateway endpoint URL for Prod stage for cacheReels function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/reel/"
+  CacheAPI:
+    Description: "API Gateway endpoint URL for Prod stage to cache all reels function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/cache"
