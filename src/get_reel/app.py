@@ -7,8 +7,12 @@ lam = boto3.client('lambda')
 
 def lambda_handler(event, context):
     
+    if ('pathParameters' not in event 
+            or event['httpMethod'] != 'GET'):
+        return response(code=400, body=json.dumps({'msg': 'Bad Request'}))
+
     # TODO: need to ensure event query parameter is available and valid 
-    id = event['queryStringParameters']['id']
+    id = event['pathParameters']['id']
     item = getReel(id).get('Item')
 
     if not item:
@@ -19,7 +23,7 @@ def lambda_handler(event, context):
         
 
 def getReel(id):
-    table_name = os.environ.get('CACHE_TABLE', 'reels')
+    table_name = os.environ.get('CACHE_TABLE', 'ReelCache')
     region = os.environ.get('REGION', 'ap-southeast-2')
     params = {
         'reel_id': {'S': str(id) }
