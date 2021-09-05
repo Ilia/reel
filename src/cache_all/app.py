@@ -3,8 +3,6 @@ import requests
 import boto3
 import os
 
-from common import response 
-
 client = boto3.client('sns') 
 
 def lambda_handler(event, context):
@@ -20,5 +18,10 @@ def cacheReel(id):
         Message=json.dumps({'default': json.dumps(id)}),
         MessageStructure='json'
     )
-    
-    
+
+def response(code=200, headers={"content-type":"application/json"}, body='Ok'):
+    return {
+        'statusCode': code,
+        'headers' : headers,
+        'body': body
+    }    

@@ -2,8 +2,6 @@ import json
 import urllib3
 import boto3
 
-from common import response 
-
 dynamodb = boto3.client('dynamodb')
 lam = boto3.client('lambda')
 
@@ -24,7 +22,7 @@ def getReel(id):
     table_name = os.environ.get('CACHE_TABLE', 'reels')
     region = os.environ.get('REGION', 'ap-southeast-2')
     params = {
-        'id': {'S': str(id) }
+        'reel_id': {'S': str(id) }
     }
 
     return dynamodb.get_item(
@@ -43,3 +41,10 @@ def cacheReel(id):
         Payload=json.dumps(payload))
     response_payload = json.loads(response['Payload'].read().decode("utf-8"))            
     return response_payload['body']
+
+def response(code=200, headers={"content-type":"application/json"}, body='Ok'):
+    return {
+        'statusCode': code,
+        'headers' : headers,
+        'body': body
+    }    
