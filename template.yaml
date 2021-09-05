@@ -11,7 +11,7 @@ Globals:
     Timeout: 60
     Handler: app.lambda_handler
     Runtime: python3.9
-    Layers:
+    Layers: 
       - !Ref SharedLayer
     Environment:
       Variables:
@@ -52,9 +52,17 @@ Resources:
         - Protocol: lambda
           Endpoint: !GetAtt cacheReelFunction.Arn
 
+  # Subscribe cacheReelFunction to the topic
+  cacheReelFunctionSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !GetAtt cacheReelFunction.Arn
+      Protocol: lambda
+      TopicArn: !Ref cacheTopic
+
   # Provide permission for SNS to invoke the Lambda function
-  cacheReelFunction:
-    Type: 'AWS::Lambda::Permission'
+  cacheReelFunctionPermission:
+    Type: AWS::Lambda::Permission
     Properties:
       Action: 'lambda:InvokeFunction'
       FunctionName: !Ref cacheReelFunction
@@ -73,6 +81,24 @@ Resources:
         DynamoDBWritePolicy:
           TableName: !Ref cacheReelTable
 
+  # Policy to allow function to public topic
+  cacheTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics: 
+        - !Ref cacheTopic
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: 'sns:Publish'
+            Resource: !Ref cacheTopic
+            Principal:
+              AWS: '*'
+            Condition:
+              ArnLike:
+                AWS:SourceArn: !Sub cacheAllFunction.Arn
+
   # Where we store the cached reels
   cacheReelTable:
     Type: AWS::DynamoDB::Table
@@ -85,9 +111,7 @@ Resources:
         -
           AttributeName: "reel_id"
           KeyType: "HASH"
-      ProvisionedThroughput:
-        ReadCapacityUnits: "1"
-        WriteCapacityUnits: "1"
+      BillingMode: PAY_PER_REQUEST
       TableName: "ReelCache"
 
   # The API end point for retreival of reels
