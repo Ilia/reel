@@ -224,5 +224,4 @@ $RECYCLE.BIN/
 
 .aws-sam
 response.json
-samconfig.toml
 
