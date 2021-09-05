@@ -57,13 +57,10 @@ Resources:
         -
           AttributeName: "reel_id"
           AttributeType: "S"
-        -
-          AttributeName: "data"
-          AttributeType: "S"
       KeySchema:
         -
-          AttributeName: "id"
-          KeyType: "String"
+          AttributeName: "reel_id"
+          KeyType: "HASH"
       ProvisionedThroughput:
         ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
