@@ -32,6 +32,22 @@ Parameters:
     Description: 'Required. The region we all want to be in.'
     Type: String
     Default: 'ap-southeast-2'
+  Environment:
+    Type: String
+    Description: The Environment the developer is working in
+    AllowedValues:
+    - local
+    - staging
+    - prod
+    Default: local
+  FeatureBranch:
+    Type: String
+    Description: Provide the name of the feature branch if this in not a build from the master code branch.
+    Default: master
+  ServiceName:
+    Type: String
+    Description: The name of the service
+    Default: reel
 
 Resources:
   # The shared library TODO: make this work
@@ -71,6 +87,7 @@ Resources:
   # The Topic consumer that caches the reels
   cacheReelFunction:
     Type: AWS::Serverless::Function
+    # FunctionName: !Sub "${paramEnvironment}${paramFeatureBranch}_${paramServiceName}_cacheReelFunction"
     DependsOn: cacheReelTable
     Properties:
       CodeUri: src/cache_reel/
@@ -123,6 +140,7 @@ Resources:
       Environment:
         Variables:
           CACHE_TABLE: !Ref cacheReelTable
+          FETCH_FUNCTION: !Ref cacheReelFunction
       Events:
         getReel:
           Type: Api
@@ -130,8 +148,10 @@ Resources:
             Path: /reel/{id}
             Method: get
       Policies:
-        DynamoDBReadPolicy:
-          TableName: !Ref cacheReelTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref cacheReelTable
+        - LambdaInvokePolicy:
+            FunctionName: !Ref cacheReelFunction
   
   # The API end point for caching all reels
   cacheAllFunction:
