@@ -14,7 +14,7 @@ def lambda_handler(event, context):
     json_data = request.json()
     
     for data in json_data['response']:
-        cacheReel(data['id'])
+        cacheReel(id=int(data['id']))
     
     return response()
 
@@ -24,7 +24,6 @@ def cacheReel(id):
         Message=json.dumps({'default': json.dumps(id)}),
         MessageStructure='json'
     )
-    
     logger.info('SNS response: %s', response)
 
 
