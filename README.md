@@ -35,8 +35,9 @@ Yes - there is probably better ways to do this, and potentially even get API Gat
 - [x] Find out how to use request library, which Lambda doesn't have
 - [x] Find out how to add API Gateway
 - [x] Update Dynomodb
-- [ ] Workout how to get SSM working to remove API Key from variable/repo
-- [ ] Finish DynomoDB integration via SAM template
+- [x] Workout how to get SSM working to remove API Key from variable/repo
+- [x] Finish DynomoDB integration via SAM template
+- [ ] Work out how to monitor SNS Topic, and consumption of messages
 - [ ] getReel, workout how to handle cache for items not in DynomoDB (invoke lambda? Or is there better?)
 - [ ] Add Cognito to API Gateway, so only auth users can invoke it
 - [ ] If anything goes wrong, we need to email the user (cache didn't work, etc)
