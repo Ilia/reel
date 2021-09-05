@@ -64,7 +64,7 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
-      TableName: "Reels"
+      TableName: "ReelCache"
 
   getReelFunction:
     Type: AWS::Serverless::Function 

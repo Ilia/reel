@@ -1,5 +1,5 @@
 import json
-import urllib3
+import os
 import boto3
 
 dynamodb = boto3.client('dynamodb')
