@@ -42,9 +42,13 @@ Yes - there is probably better ways to do this, and potentially even get API Gat
 - [ ] If anything goes wrong, we need to email the user (cache didn't work, etc)
 - [ ] Cloud Watch event setup, so that cache is invoked at regular time
 - [ ] Break template.yaml into sub template for better maintenance
+- [ ] Add tests, lots of tests 
+- [ ] Add various Env (Prod, Stage, Dev)
+- [ ] Add Output to template
 
 ### Tips/Tricks/Hints 
 
 Things I need to remember:
 1. export AWS_PROFILE='profile' before running sam deploy
 2. SSM Parameter Store "REEL_API_KEY" should match the "Default" value
+3. "is in ROLLBACK_COMPLETE state and can not be updated." - need to manual remove the stack, seems the stack is empty, but its in a state, that cannot be deployeed, there is a way to use create-stack --on-failure, but that doesn't work with deploy.
