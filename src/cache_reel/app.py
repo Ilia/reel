@@ -2,6 +2,7 @@ import json
 import requests
 import boto3
 import os
+import logging
 
 dynamodb = boto3.client('dynamodb')
 logger = logging.getLogger('boto3')
@@ -11,7 +12,7 @@ logger.setLevel(logging.INFO)
 def lambda_handler(event, context):
 
     logger.info('event: %s', event)
-    
+
     # TODO: ensure we have proper validation
     id = event['Records'][0]['Sns']['Message']
     data = fetchDataFromApi(id)
