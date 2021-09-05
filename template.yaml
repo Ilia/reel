@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  reel
+  Reel Project
 
   This is a wrapper API for the slate app, specifically for fetching and caching reel. 
   This can cache all the reels in an async manner in a dynomodb, and provide an API to retreive the cached reels.
@@ -20,10 +20,6 @@ Globals:
         API_TOKEN: !Ref ApiToken
 
 Parameters:
-  CacheTable:
-    Description: 'Required. The cache table in Dynomodb'
-    Type: String
-    Default: 'Reels'
   ApiToken:
     Description: 'Required. Slate App API Key'
     Type: 'AWS::SSM::Parameter::Value<String>'
@@ -38,6 +34,7 @@ Parameters:
     Default: 'ap-southeast-2'
 
 Resources:
+  # The shared library TODO: make this work
   SharedLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -47,9 +44,36 @@ Resources:
     Metadata:
       BuildMethod: python3.9
 
+  # Topic for pushing all the required reels to cache
   cacheTopic:
     Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Protocol: lambda
+          Endpoint: !GetAtt cacheReelFunction.Arn
 
+  # Provide permission for SNS to invoke the Lambda function
+  cacheReelFunction:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref cacheReelFunction
+      Principal: sns.amazonaws.com
+
+  # The Topic consumer that caches the reels
+  cacheReelFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: cacheReelTable
+    Properties:
+      CodeUri: src/cache_reel/
+      Environment:
+        Variables:
+          CACHE_TABLE: !Ref cacheReelTable
+      Policies:
+        DynamoDBWritePolicy:
+          TableName: !Ref cacheReelTable
+
+  # Where we store the cached reels
   cacheReelTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -66,13 +90,15 @@ Resources:
         WriteCapacityUnits: "1"
       TableName: "ReelCache"
 
+  # The API end point for retreival of reels
   getReelFunction:
     Type: AWS::Serverless::Function 
+    DependsOn: cacheReelTable
     Properties:
       CodeUri: src/get_reel/
       Environment:
         Variables:
-          CACHE_TABLE: !Ref CacheTable
+          CACHE_TABLE: !Ref cacheReelTable
       Events:
         getReel:
           Type: Api
@@ -83,6 +109,7 @@ Resources:
         DynamoDBReadPolicy:
           TableName: !Ref cacheReelTable
   
+  # The API end point for caching all reels
   cacheAllFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -99,15 +126,6 @@ Resources:
           Properties:
             Path: /cache/
             Method: get
-  
-  cacheReelFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/cache_reel/
-      Policies:
-        DynamoDBWritePolicy:
-          TableName: !Ref cacheReelTable
-
 
 Outputs:
   reelApi:
