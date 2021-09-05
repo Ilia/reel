@@ -16,8 +16,8 @@ def lambda_handler(event, context):
     item = getReel(id).get('Item')
 
     if not item:
-        # TODO: cache the reel and response in real time - is there a better way?
-        return response(body={})
+        # TODO: this is realtime, is there a better way?
+        return response(body=fetchReel(id))
 
     return response(body=item.get('data').get('S'))    
         
@@ -34,13 +34,13 @@ def getReel(id):
         Key=params
     )
     
-def cacheReel(id):
-    # TODO: cache the reel
-    payload = {}
-    payload['reel_id'] = id
+def fetchReel(id):
+    payload = {
+        "reel_id": id
+    }
         
     response = lam.invoke(
-        FunctionName='cacheReel',
+        FunctionName=os.environ.get('FETCH_FUNCTION'),
         InvocationType='RequestResponse',
         Payload=json.dumps(payload))
     response_payload = json.loads(response['Payload'].read().decode("utf-8"))            
