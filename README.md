@@ -47,7 +47,7 @@ Yes - there is probably better ways to do this, and potentially even get API Gat
 - [ ] Add various Env (Prod, Stage, Dev)
 - [ ] Add Output to template
 - [ ] Make LayerVersion work, need to read up on how to use it properly
-- [ ] CI/CD thru Github Actions
+- [x] CI/CD thru Github Actions
 - [ ] CI/CD thru CodeBuild/CodeDeploy/CodePipeline
 
 ### Tips/Tricks/Hints 
