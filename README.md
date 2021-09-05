@@ -37,7 +37,7 @@ Yes - there is probably better ways to do this, and potentially even get API Gat
 - [x] Update Dynomodb
 - [x] Workout how to get SSM working to remove API Key from variable/repo
 - [x] Finish DynomoDB integration via SAM template
-- [ ] Work out how to monitor SNS Topic, and consumption of messages
+- [x] Work out how to monitor SNS Topic, and consumption of messages
 - [ ] getReel, workout how to handle cache for items not in DynomoDB (invoke lambda? Or is there better?)
 - [ ] Add Cognito to API Gateway, so only auth users can invoke it
 - [ ] If anything goes wrong, we need to email the user (cache didn't work, etc)
@@ -47,6 +47,8 @@ Yes - there is probably better ways to do this, and potentially even get API Gat
 - [ ] Add various Env (Prod, Stage, Dev)
 - [ ] Add Output to template
 - [ ] Make LayerVersion work, need to read up on how to use it properly
+- [ ] CI/CD thru Github Actions
+- [ ] CI/CD thru CodeBuild/CodeDeploy/CodePipeline
 
 ### Tips/Tricks/Hints 
 
@@ -54,3 +56,5 @@ Things I need to remember:
 1. export AWS_PROFILE='profile' before running sam deploy
 2. SSM Parameter Store "REEL_API_KEY" should match the "Default" value
 3. "is in ROLLBACK_COMPLETE state and can not be updated." - need to manual remove the stack, seems the stack is empty, but its in a state, that cannot be deployeed, there is a way to use create-stack --on-failure, but that doesn't work with deploy.
+4. You can view all logs related to Lambda via lambda/home -> Monitoring
+5. To check your items in Dynomodb in the aws console UI ensure to refresh the page :)
