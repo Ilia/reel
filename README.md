@@ -43,14 +43,26 @@ Yes - there is probably better ways to do this, and potentially even get API Gat
 - [ ] If anything goes wrong, we need to email the user (cache didn't work, etc)
 - [ ] Cloud Watch event setup, so that cache is invoked at regular time
 - [ ] Break template.yaml into sub template for better maintenance
+- [x] Work out how to use pytest and create a unit test 
 - [ ] Add tests, lots of tests 
 - [x] Add various Env parameter (Prod, Stage, Dev)
 - [ ] Proper use of ENV parameter (Prod, Stage, Dev)
 - [ ] Add Output to template
-- [ ] Make LayerVersion work, need to read up on how to use it properly
+- [x] Make LayerVersion work, need to read up on how to use it properly
 - [x] CI/CD thru Github Actions
 - [ ] CI/CD thru CodeBuild/CodeDeploy/CodePipeline
 - [ ] Add versioning
+- [ ] Work out how to use Layer functions in tests
+- [ ] Work out how to trigger tests in CI/CD
+ 
+## Local Tests
+
+To run local tests:
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r test/requirements.txt
+python3 -m pytest tests/ -v
 
 ### Tips/Tricks/Hints 
 
@@ -61,3 +73,13 @@ Things I need to remember:
 4. You can view all logs related to Lambda via lambda/home -> Monitoring
 5. To check your items in Dynomodb in the aws console UI ensure to refresh the page :)
 6. Always check what Policies is required for the functions
+
+### Resources
+
+https://aws.amazon.com/blogs/compute/introducing-aws-sam-pipelines-automatically-generate-deployment-pipelines-for-serverless-applications/
+https://aws.plainenglish.io/a-practical-guide-surviving-aws-sam-part-3-lambda-layers-8a55eb5d2cbe
+https://hands-on.cloud/how-to-test-python-lambda-functions/
+
+https://github.com/aws-samples/aws-serverless-workshops
+
+

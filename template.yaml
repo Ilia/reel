@@ -35,11 +35,11 @@ Parameters:
   Environment:
     Type: String
     Description: The Environment the developer is working in
+    Default: dev
     AllowedValues:
-    - local
-    - staging
+    - dev
+    - stage
     - prod
-    Default: local
   FeatureBranch:
     Type: String
     Description: Provide the name of the feature branch if this in not a build from the master code branch.
@@ -54,7 +54,7 @@ Resources:
   SharedLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      ContentUri: src/common/
+      ContentUri: src/library/
       CompatibleRuntimes:
         - python3.9
     Metadata:
@@ -170,6 +170,12 @@ Resources:
           Properties:
             Path: /cache/
             Method: get
+
+  # Test function
+  testFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/test/
 
 Outputs:
   CacheAPI:

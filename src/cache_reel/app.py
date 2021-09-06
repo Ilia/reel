@@ -3,6 +3,7 @@ import requests
 import boto3
 import os
 import logging
+from common import response
 
 dynamodb = boto3.client('dynamodb')
 logger = logging.getLogger('boto3')
@@ -66,11 +67,4 @@ def fetchDataFromApi(id):
 
     request = requests.get(api_endpoint + str(id), params={'access_token':api_token})
     json_data = request.json()
-    return json_data['response']
-
-def response(code=200, headers={"content-type":"application/json"}, body='Ok'):
-    return {
-        'statusCode': code,
-        'headers' : headers,
-        'body': body
-    }    
+    return json_data['response'] 

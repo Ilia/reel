@@ -224,4 +224,5 @@ $RECYCLE.BIN/
 
 .aws-sam
 response.json
+__pycache__
 
