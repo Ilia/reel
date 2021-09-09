@@ -181,3 +181,6 @@ Outputs:
   CacheAPI:
     Description: "API Gateway endpoint URL for Prod stage to cache all reels function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/cache"
+  TestFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt testFunction.Arn

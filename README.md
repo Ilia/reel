@@ -62,7 +62,8 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 pip install -r test/requirements.txt
-python3 -m pytest tests/ -v
+export PYTHONPATH=$PWD/src/library:$PWD/src:$PYTHONPATH
+python3 -m pytest tests
 
 ### Tips/Tricks/Hints 
 
@@ -73,7 +74,7 @@ Things I need to remember:
 4. You can view all logs related to Lambda via lambda/home -> Monitoring
 5. To check your items in Dynomodb in the aws console UI ensure to refresh the page :)
 6. Always check what Policies is required for the functions
-
+7. "An error occurred (ExpiredToken) when calling the PutObject operation: The provided token has expired." -> export AWS_PROFILE=<profile name>
 ### Resources
 
 https://aws.amazon.com/blogs/compute/introducing-aws-sam-pipelines-automatically-generate-deployment-pipelines-for-serverless-applications/
@@ -81,5 +82,5 @@ https://aws.plainenglish.io/a-practical-guide-surviving-aws-sam-part-3-lambda-la
 https://hands-on.cloud/how-to-test-python-lambda-functions/
 
 https://github.com/aws-samples/aws-serverless-workshops
-
+https://stackoverflow.com/questions/65270647/running-pytest-in-aws-sam-doesnt-use-env-vars-in-template-yaml
 
