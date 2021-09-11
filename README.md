@@ -61,7 +61,7 @@ To run local tests:
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install -r test/requirements.txt
+pip install -r tests/requirements.txt
 export PYTHONPATH=$PWD/src/library:$PWD/src:$PYTHONPATH
 python3 -m pytest tests
 

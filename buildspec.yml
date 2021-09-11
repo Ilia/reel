@@ -13,9 +13,7 @@ phases:
     commands:
       - echo $CODEBUILD_GIT_BRANCH
       - pip install --upgrade pip
-      - ls
-      - pwd
-      - pip install -r test/requirements.txt
+      - pip install -r tests/requirements.txt
       - export PYTHONPATH=$PWD/src/library:$PWD/src:$PYTHONPATH
       - python -m pytest tests
 
