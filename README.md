@@ -52,10 +52,10 @@ Yes - there is probably better ways to do this, and potentially even get API Gat
 - [ ] Add Output to template
 - [x] Make LayerVersion work, need to read up on how to use it properly
 - [x] CI/CD thru Github Actions
-- [ ] CI/CD thru CodeBuild/CodeDeploy/CodePipeline
+- [x] CI/CD thru CodeBuild
 - [ ] Add versioning
-- [ ] Work out how to use Layer functions in tests
-- [ ] Work out how to trigger tests in CI/CD
+- [x] Work out how to use Layer functions in tests
+- [x] Work out how to trigger tests in CI/CD
  
 ## Local Tests
 
