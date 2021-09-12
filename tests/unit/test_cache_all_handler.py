@@ -1,14 +1,16 @@
 import json
 import pytest
-from pathlib import Path
 import os
+import json 
+from requests.exceptions import HTTPError, Timeout
 
 from cache_all import app
 
+# @todo: how do I DRY this
 
 @pytest.fixture()
 def test_environ():
-    """Load environment variables to mock"""
+    """Load environment variables to mock example"""
     # data = {}    
     # with open("test.env.json") as json_file:
     #     data = json.load(json_file)
@@ -17,22 +19,27 @@ def test_environ():
     # print (data)
     return data
 
-
-def test_cache_all_lambda_handler(mocker):
-    # todo: work out why fixture is not working
-    # todo: we are working with cloud SNS topic, is there any other way? 
-    data = {}    
-    data_folder = Path("./tests/unit")
-    file_to_open = data_folder / "test.env.json"
-    print (file_to_open)
-    with open(file_to_open) as json_file:
-        data = json.load(json_file)
-    for (k, v) in data["cachelAllFunction"].items():
-        os.environ[k] = str(v)
-
-    print (data)
+def test_success(mocker):
+    mocker.patch( 'cache_all.app.fetch_reels', return_value={'response':[{"id":1}]} )
+    mocker.patch( 'cache_all.app.cache_reel', return_value=[] )
 
     ret = app.lambda_handler({}, "")
-    
     assert ret["statusCode"] == 200
     assert ret["body"] == 'Ok'
+
+def test_api_failure(mocker):
+    mocker.patch( 'cache_all.app.fetch_reels', return_value={'error':{}} )
+    mocker.patch( 'cache_all.app.cache_reel', return_value=[] )
+
+    ret = app.lambda_handler({}, "")
+    assert ret["statusCode"] == 400
+    assert ret["body"] == 'Could not get proper response from Reel API'
+
+def test_api_500_failure(mocker):
+
+    mocker.patch( 'cache_all.app.fetch_reels', side_effect=HTTPError, return_value=[])
+    mocker.patch( 'cache_all.app.cache_reel', return_value=[] )
+    
+    ret = app.lambda_handler({}, "")
+    assert ret["statusCode"] == 500
+    assert ret["body"] == 'Failed getting response from Reel API'
