@@ -56,9 +56,9 @@ Resources:
     Properties:
       ContentUri: src/library/
       CompatibleRuntimes:
-        - python3.9
+        - python3.8
     Metadata:
-      BuildMethod: python3.9
+      BuildMethod: python3.8
 
   # Topic for pushing all the required reels to cache
   cacheTopic:
