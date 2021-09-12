@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.9
+      python: 3.8
     commands:
       - echo Installing codebuild-extras...
       - curl -fsSL https://raw.githubusercontent.com/thii/aws-codebuild-extras/fd64ace08a309109058c461e6997807e7473fc61/install >> extras.sh
