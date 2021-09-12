@@ -1,0 +1,180 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Reel Project
+
+  This is a wrapper API for the slate app, specifically for fetching and caching reel.  This
+  can cache all the reels in an async manner in a dynomodb, and provide an API to
+  retreive the cached reels.
+
+  '
+Globals:
+  Function:
+    Timeout: 60
+    Handler: app.lambda_handler
+    Runtime: python3.8
+    Layers:
+    - Ref: SharedLayer
+    Environment:
+      Variables:
+        REGION:
+          Ref: Region
+        API_ENDPOINT:
+          Ref: ApiEndpoint
+        API_TOKEN:
+          Ref: ApiToken
+Parameters:
+  ApiToken:
+    Description: Required. Slate App API Key
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: REEL_API_KEY
+  ApiEndpoint:
+    Description: Required. The Slate App API end point for all reel related information
+    Type: String
+    Default: https://mofa.slateapp.com/api/v1/showreel/
+  Region:
+    Description: Required. The region we all want to be in.
+    Type: String
+    Default: ap-southeast-2
+  Environment:
+    Type: String
+    Description: The Environment the developer is working in
+    Default: dev
+    AllowedValues:
+    - dev
+    - stage
+    - prod
+  FeatureBranch:
+    Type: String
+    Description: Provide the name of the feature branch if this in not a build from
+      the master code branch.
+    Default: master
+  ServiceName:
+    Type: String
+    Description: The name of the service
+    Default: reel
+Resources:
+  SharedLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: s3://sam-codedeploy-package/694a0222efd18d62fd81d3605179ec2b
+      CompatibleRuntimes:
+      - python3.8
+    Metadata:
+      BuildMethod: python3.8
+  cacheTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+      - Protocol: lambda
+        Endpoint:
+          Fn::GetAtt:
+          - cacheReelFunction
+          - Arn
+  cacheReelFunctionPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: cacheReelFunction
+      Principal: sns.amazonaws.com
+  cacheReelFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: cacheReelTable
+    Properties:
+      CodeUri: s3://sam-codedeploy-package/8c0f27d0843c003fe632d7dea1e06bb0
+      Environment:
+        Variables:
+          CACHE_TABLE:
+            Ref: cacheReelTable
+      Policies:
+        DynamoDBWritePolicy:
+          TableName:
+            Ref: cacheReelTable
+  cacheTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+      - Ref: cacheTopic
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action: sns:Publish
+          Resource:
+            Ref: cacheTopic
+          Principal:
+            AWS: '*'
+          Condition:
+            ArnLike:
+              AWS:SourceArn:
+                Fn::Sub: cacheAllFunction.Arn
+  cacheReelTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: reel_id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: reel_id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      TableName: ReelCache
+  getReelFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: cacheReelTable
+    Properties:
+      CodeUri: s3://sam-codedeploy-package/1b4cae4f674be295f316f7bd3e1b8032
+      Environment:
+        Variables:
+          CACHE_TABLE:
+            Ref: cacheReelTable
+          FETCH_FUNCTION:
+            Ref: cacheReelFunction
+      Events:
+        getReel:
+          Type: Api
+          Properties:
+            Path: /reel/{id}
+            Method: get
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: cacheReelTable
+      - LambdaInvokePolicy:
+          FunctionName:
+            Ref: cacheReelFunction
+  cacheAllFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://sam-codedeploy-package/b9a55277908aed52d9838fe58e598046
+      Environment:
+        Variables:
+          CACHE_TOPIC_ARN:
+            Ref: cacheTopic
+      Policies:
+        SNSPublishMessagePolicy:
+          TopicName:
+            Fn::GetAtt:
+            - cacheTopic
+            - TopicName
+      Events:
+        getReel:
+          Type: Api
+          Properties:
+            Path: /cache/
+            Method: get
+  testFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://sam-codedeploy-package/64900020593ce77d76303148c7177488
+Outputs:
+  CacheAPI:
+    Description: API Gateway endpoint URL for Prod stage to cache all reels function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/cache
+  TestFunction:
+    Description: Hello World Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - testFunction
+      - Arn
