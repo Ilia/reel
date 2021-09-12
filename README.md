@@ -2,6 +2,8 @@
 
 TLDR - Exploring SAM with Python
 
+https://codebuild.ap-southeast-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiRXIwMldGT1BCbW9idVNHbUx6dFVxbTh1bnozVnRES0M3Ni9NbUtNeHFhUHkzcTRjR2JvWk12YnVXUncraklxSWJtTlJKWDBCZE1xNmMwQmwzdURibGFjPSIsIml2UGFyYW1ldGVyU3BlYyI6IjIwQnpSREk2OUs4dlBqWlgiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main
+
 ## The Problem
 
 We need to grab reel information from the SlateAPP API, but the response time from the API end points is not performant and since the data from that API doesn't change much, we need a caching mechanism in between - this is where this mini project comes in. 
