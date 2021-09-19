@@ -21,12 +21,12 @@ This project provide 2 entry points:
 The solution will use the following technologies:
 
 1. SAM
-2. Lambda functions 
+2. Lambda  
 3. API Gateway
 4. SNS 
 5. DynomoDB
 6. SSM
-7. Cognito - (see TODO)
+7. Cognito
 8. SES - (see TODO)
 9. Cloud Watch (see TODO)
 10. CodeBuild
