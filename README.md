@@ -29,6 +29,7 @@ The solution will use the following technologies:
 7. Cognito - (see TODO)
 8. SES - (see TODO)
 9. Cloud Watch (see TODO)
+10. CodeBuild
 
 Yes - there is probably better ways to do this, and potentially even get API Gateway to cache, but this is an education related project, where I am trying to familiarise myself with all AWS. 
 
@@ -41,7 +42,7 @@ Yes - there is probably better ways to do this, and potentially even get API Gat
 - [x] Finish DynomoDB integration via SAM template
 - [x] Work out how to monitor SNS Topic, and consumption of messages
 - [x] getReel, workout how to handle cache for items not in DynomoDB (invoke lambda? Or is there better?)
-- [ ] Add Cognito to API Gateway, so only auth users can invoke it
+- [x] Add Cognito to API Gateway, so only auth users can invoke it
 - [ ] If anything goes wrong, we need to email the user (cache didn't work, etc)
 - [ ] Cloud Watch event setup, so that cache is invoked at regular time
 - [ ] Break template.yaml into sub template for better maintenance
@@ -56,7 +57,9 @@ Yes - there is probably better ways to do this, and potentially even get API Gat
 - [ ] Add versioning
 - [x] Work out how to use Layer functions in tests
 - [x] Work out how to trigger tests in CI/CD
- 
+- [ ] Cognito - find out how to setup HostedUI + App client full setup via CloudFormation/SAM
+- [ ] get Reel function, handle better when no reel found
+
 ## Local Tests
 
 To run local tests:
@@ -77,6 +80,13 @@ Things I need to remember:
 5. To check your items in Dynomodb in the aws console UI ensure to refresh the page :)
 6. Always check what Policies is required for the functions
 7. "An error occurred (ExpiredToken) when calling the PutObject operation: The provided token has expired." -> export AWS_PROFILE=<profile name>
+
+### Auth
+
+Login:
+https://reel-sample-application.auth.ap-southeast-2.amazoncognito.com/login?client_id=cp0shbd5h0chjas3pcmt4euic&response_type=token&scope=email+openid&redirect_uri=http://localhost/
+
+
 ### Resources
 
 https://aws.amazon.com/blogs/compute/introducing-aws-sam-pipelines-automatically-generate-deployment-pipelines-for-serverless-applications/
@@ -85,4 +95,5 @@ https://hands-on.cloud/how-to-test-python-lambda-functions/
 
 https://github.com/aws-samples/aws-serverless-workshops
 https://stackoverflow.com/questions/65270647/running-pytest-in-aws-sam-doesnt-use-env-vars-in-template-yaml
+https://tenmilesquare.com/resources/software-development/aws-sam-api-with-cognito/
 
